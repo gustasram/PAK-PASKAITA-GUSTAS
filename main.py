@@ -12,7 +12,7 @@ connection = sqlite3.connect("./NotesDatabase.db")
 
 @app.route("/")
 def mano_funkcija():
-    return("Labas")
+    return("Labas, tai yra mano užrašinė!")
 
 #miscellanous keliai
 
