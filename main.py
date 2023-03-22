@@ -2,7 +2,6 @@ from flask import Flask, render_template, request
 import sqlite3
 app = Flask(__name__,static_url_path='/')
 
-
 variable = 5
 array = []
 skaiciai = 0 # su siuo elementu ruosiamas automatinis uzrasines uzrasu skaiciavimas kairiame sone
@@ -10,8 +9,14 @@ connection = sqlite3.connect("./NotesDatabase.db")
 
 #titulinis puslapis
 
-@app.route("/")
+@app.route("/",methods=["GET","POST"])
 def titulinio_funkcija():
+    request.method == "POST"
+    usern = request.form.get("username")
+    passw = request.form.get("password")
+    if usern and passw:
+        insert_into_db_registration(usern,passw)
+        print(usern,passw)
     return render_template('./titulinis.html', var = plus_one())
 
 #miscellanous keliai
@@ -96,6 +101,30 @@ def select_from_db():
 
     return array
 
+def createDBforReg():
+    registration_connection = sqlite3.connect("./Registration.db")
+
+    cursor = registration_connection.cursor()
+
+    createTableString = """CREATE TABLE IF NOT EXISTS Users(
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        username TEXT NOT NULL,
+        password TEXT NOT NULL
+    ) """
+
+    cursor.execute(createTableString)
+
+def insert_into_db_registration(username,password):
+    conn = sqlite3.connect("./Registration.db")
+    queryString = """
+        INSERT INTO Users (username,password) VALUES (?,?)
+    """
+    
+    cur = conn.cursor()
+    cur.execute(queryString,(username,password,))
+    conn.commit()
+
 if __name__ == "__main__":
     createDB()
+    createDBforReg()
     app.run(debug = "true")
