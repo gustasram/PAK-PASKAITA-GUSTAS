@@ -11,14 +11,15 @@ connection = sqlite3.connect("./NotesDatabase.db")
 
 @app.route("/",methods=["GET","POST"])
 def titulinio_funkcija():
-    rez = "Neuzpildyti privalomi laukeliai"
-    request.method == "POST"
-    usern = request.form.get("username")
-    passw = request.form.get("password")
-    if usern and passw:
-
-        rez = insert_into_db_registration(usern,passw)
-        print(usern,passw)
+    rez = ""
+    if (request.method == "POST"):
+        usern = request.form.get("username")
+        passw = request.form.get("password")
+        if usern and passw:
+            rez = insert_into_db_registration(usern,passw)
+            print(usern,passw)
+        else:
+            rez = "Neuzpildyti privalomi laukeliai"
     return render_template('./titulinis.html', status = rez)
 
 #miscellanous keliai
@@ -118,10 +119,11 @@ def createDBforReg():
 
 def insert_into_db_registration(username,password):
     conn = sqlite3.connect("./Registration.db")
-    reg = "Registruoti vartotojo nepavyko"
+    reg = ""
     queryString = """
         INSERT INTO Users (username,password) VALUES (?,?)
     """
+
     cur = conn.cursor()
     
     try:
@@ -130,6 +132,7 @@ def insert_into_db_registration(username,password):
 
     except sqlite3.IntegrityError as e:
         print(e)
+        reg = "Registruoti vartotojo nepavyko"
         print(reg)
         
     conn.commit()
