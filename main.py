@@ -8,11 +8,11 @@ array = []
 skaiciai = 0 # su siuo elementu ruosiamas automatinis uzrasines uzrasu skaiciavimas kairiame sone
 connection = sqlite3.connect("./NotesDatabase.db")
 
-#miscellanous keliai
+#titulinis puslapis
 
 @app.route("/")
-def mano_funkcija():
-    return("Labas, tai yra mano užrašinė!")
+def titulinio_funkcija():
+    return render_template('./titulinis.html', var = plus_one())
 
 #miscellanous keliai
 
