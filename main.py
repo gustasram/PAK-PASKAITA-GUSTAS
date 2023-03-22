@@ -11,13 +11,15 @@ connection = sqlite3.connect("./NotesDatabase.db")
 
 @app.route("/",methods=["GET","POST"])
 def titulinio_funkcija():
+    rez = "Neuzpildyti privalomi laukeliai"
     request.method == "POST"
     usern = request.form.get("username")
     passw = request.form.get("password")
     if usern and passw:
-        insert_into_db_registration(usern,passw)
+
+        rez = insert_into_db_registration(usern,passw)
         print(usern,passw)
-    return render_template('./titulinis.html', var = plus_one())
+    return render_template('./titulinis.html', status = rez)
 
 #miscellanous keliai
 
@@ -108,21 +110,31 @@ def createDBforReg():
 
     createTableString = """CREATE TABLE IF NOT EXISTS Users(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        username TEXT NOT NULL,
-        password TEXT NOT NULL
+        username TEXT NOT NULL UNIQUE,
+        password TEXT NOT NULL UNIQUE
     ) """
 
     cursor.execute(createTableString)
 
 def insert_into_db_registration(username,password):
     conn = sqlite3.connect("./Registration.db")
+    reg = "Registruoti vartotojo nepavyko"
     queryString = """
         INSERT INTO Users (username,password) VALUES (?,?)
     """
-    
     cur = conn.cursor()
-    cur.execute(queryString,(username,password,))
+    
+    try:
+        cur.execute(queryString,(username,password,))
+        reg = "Registracija sekminga"
+
+    except sqlite3.IntegrityError as e:
+        print(e)
+        print(reg)
+        
     conn.commit()
+    return reg
+
 
 if __name__ == "__main__":
     createDB()
