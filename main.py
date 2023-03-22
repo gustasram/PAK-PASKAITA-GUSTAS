@@ -8,19 +8,27 @@ array = []
 skaiciai = 0 # su siuo elementu ruosiamas automatinis uzrasines uzrasu skaiciavimas kairiame sone
 connection = sqlite3.connect("./NotesDatabase.db")
 
+#miscellanous keliai
+
 @app.route("/")
 def mano_funkcija():
     return("Labas")
 
+#miscellanous keliai
+
 @app.route("/test")
 def test():
     return render_template('./index.html', var = plus_one())
+
+#miscellanous keliai
 
 @app.route("/debug")
 def plus_one():
     global variable
     variable = variable + 1
     return str(variable)
+
+#kuriamas kelias i uzrasus
 
 @app.route("/notes",methods=["GET","POST"])
 def notes():
@@ -40,7 +48,9 @@ def notes():
     else:
         
         return render_template('./notes.html', note = select_from_db())
-    
+
+#sukuriama duomenu baze
+
 def createDB():
     global connection
 
@@ -62,6 +72,8 @@ def createDB():
     cursor.execute(createTableString)
     cursor.execute(createNotesTableString)
 
+#ivedimas i duomenu baze
+
 def insert_into_db(note):
     conn = sqlite3.connect("./NotesDatabase.db")
     queryString = """
@@ -71,6 +83,8 @@ def insert_into_db(note):
     cur = conn.cursor()
     cur.execute(queryString,(note,))
     conn.commit()
+
+#informacijos paemimas is duomenu bazes
 
 def select_from_db():
     conn = sqlite3.connect("./NotesDatabase.db")
